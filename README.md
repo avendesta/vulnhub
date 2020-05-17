@@ -11,13 +11,16 @@ vulnerabilities
 # INITIAL SETUP
 sudo apt install python3-pip
 sudo apt install python3-virtualenv
+#make sure pwd = vulnhub/
+virtualenv venv 
+# or
+# pip3 install virtualenv; python3 -m virtualenv venv
 
-#create project directory; 
-#intialize virtualenvironment then activate it
-mkdir flaskapp
-virtualenv venv
+#activate virtualenv
 source /venv/bin/activate
 cd flaskapp
 
 # make sure to set environment variable before `flask run`
 export FLASK_APP=blog.py
+pip install -r requirements.txt
+flask run
