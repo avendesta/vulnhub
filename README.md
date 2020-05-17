@@ -24,3 +24,9 @@ cd flaskapp
 export FLASK_APP=blog.py
 pip install -r requirements.txt
 flask run
+
+
+# MONGODB
+#-install mongodb following 
+#-"https://docs.mongodb.com/manual/tutorial/install-mongodb-on-ubuntu/"
+# install mongodb compass for visualization and import sample json data - sample_db.json
