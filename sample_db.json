@@ -1,3 +1,7 @@
-{ "type": "home", "number": "212-555-1234" }
-{ "type": "cell", "number": "646-555-4567" }
-{ "type": "office", "number": "202-555-0182"}
+{ "username": "rick-lab", "email":"ricksanchez@adult.swim", "password": "getShwifty" }
+{ "username": "morty-smith", "email":"mortysanchez@adult.swim", "password": "loveJessica" }
+{ "username": "meresaHacker", "email":"meresaG@uni.it", "password": "202-555-0182"}
+{ "username": "administrator", "email":"professor@uni.it", "password": "niceHacking"}
+{ "username": "homerSimpson", "email":"Hsimpson@spring@field", "password": "loveMarge"}
+
+
