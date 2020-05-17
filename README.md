@@ -18,3 +18,6 @@ mkdir flaskapp
 virtualenv venv
 source /venv/bin/activate
 cd flaskapp
+
+# make sure to set environment variable before `flask run`
+export FLASK_APP=blog.py
