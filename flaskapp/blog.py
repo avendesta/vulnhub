@@ -34,12 +34,19 @@ def get():
         email = form.email.data
         token = form.token.data
         element = mongo.db.accounts.find_one({'email':email})
-        if element:
+        try:
+            payload = jwt.decode(token,app.config['SECRET_KEY'])
+        except jwt.ExpiredSignatureError as e:
+            return str(e)
+        except jwt.InvalidTokenError as e:
+            return str(e)
+
+        if payload['username'] == element.get('username'):
             username = element.get('username')
             email = element.get('email')
             return username
         else:
-            return jsonify({"result":'fail',"email":'Email not found'})
+            return jsonify({"email":'email not found'})
     else:
         return jsonify(form.errors)
 
@@ -71,7 +78,7 @@ def login():
         print(fetch)
         if fetch:
             username = fetch.get("username")
-            exp = datetime.utcnow() + timedelta(minutes=30)
+            exp = datetime.utcnow() + timedelta(minutes=1)
             token = jwt.encode({"username":username,"exp":exp},app.config['SECRET_KEY']).decode('utf-8')
             return jsonify({"token":token,"email":email})
         else:
