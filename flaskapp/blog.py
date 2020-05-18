@@ -1,7 +1,8 @@
 from flask import Flask, request, jsonify
 from flask_pymongo import PyMongo
 from forms import RegistrationForm, LoginForm, RequestForm
-import json
+import jwt
+from datetime import datetime, timedelta
 
 app = Flask(__name__)
 
@@ -38,7 +39,7 @@ def get():
             email = element.get('email')
             return username
         else:
-            return "EMAIL Not Found"
+            return jsonify({"result":'fail',"email":'Email not found'})
     else:
         return jsonify(form.errors)
 
@@ -52,18 +53,29 @@ def register():
 
         accounts = mongo.db.accounts
         if accounts.find({"email":form.email.data}).count()>0:
-            return "email already exist"
+            return jsonify({"result":'fail',"email":"email already exist"})
         else:
             accounts.insert_one({"username":username,"email":email,"password":password})
-            return "Registered successfully!!"
+            return jsonify({"result":'success'})
     else:
         return jsonify(form.errors)
 
 @app.route("/login",methods=['POST'])
 def login():
     form = LoginForm()
+    accounts = mongo.db.accounts
     if form.validate_on_submit():
-        return "Login sucessful"
+        email = form.email.data
+        password = form.email.data
+        fetch = accounts.find_one({"email":email})
+        print(fetch)
+        if fetch:
+            username = fetch.get("username")
+            exp = datetime.utcnow() + timedelta(minutes=30)
+            token = jwt.encode({"username":username,"exp":exp},app.config['SECRET_KEY']).decode('utf-8')
+            return jsonify({"token":token,"email":email})
+        else:
+            return jsonify({"result":'Incorrect email or password'})
     else:
         return jsonify(form.errors)
 
