@@ -21,5 +21,5 @@ class LoginForm(FlaskForm):
 class RequestForm(FlaskForm):
     email = StringField('Email',
          validators=[DataRequired(),Email()])
-    token = StringField('Token',
-         validators=[DataRequired(message="Token required!. Login to get a token")])
+#     access_token = StringField('Token',
+#          validators=[DataRequired(message="Token required!. Login to get a token")])

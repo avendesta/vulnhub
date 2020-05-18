@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_pymongo import PyMongo
 from forms import RegistrationForm, LoginForm, RequestForm
-import jwt
+from flask_jwt_extended import JWTManager, jwt_required, create_access_token,get_jwt_identity
 from datetime import datetime, timedelta
 
 app = Flask(__name__)
@@ -10,8 +10,12 @@ app.config['SECRET_KEY'] = 'iloveyou'
 app.config['MONGO_DBNAME'] = "flaskapp"
 app.config['MONGO_URI'] = "mongodb://localhost:27017/flaskapp"
 app.config['WTF_CSRF_ENABLED'] = False
+app.config['JWT_TOKEN_LOCATION'] = ['json']
+app.config['JWT_SECRET_KEY'] = 'superSecret'
 
 mongo = PyMongo(app)
+jwt = JWTManager(app)
+
 
 @app.route("/")
 def index():
@@ -28,20 +32,16 @@ def getall():
     return jsonify(all_user)
 
 @app.route("/get", methods=['GET'])
+@jwt_required
 def get():
     form = RequestForm(request.args)
     if form.validate():
         email = form.email.data
-        token = form.token.data
+        current_user = get_jwt_identity()
+        print(current_user)
         element = mongo.db.accounts.find_one({'email':email})
-        try:
-            payload = jwt.decode(token,app.config['SECRET_KEY'])
-        except jwt.ExpiredSignatureError as e:
-            return str(e)
-        except jwt.InvalidTokenError as e:
-            return str(e)
 
-        if payload['username'] == element.get('username'):
+        if current_user == element.get('username'):
             username = element.get('username')
             email = element.get('email')
             return username
@@ -78,9 +78,9 @@ def login():
         print(fetch)
         if fetch:
             username = fetch.get("username")
-            exp = datetime.utcnow() + timedelta(minutes=1)
-            token = jwt.encode({"username":username,"exp":exp},app.config['SECRET_KEY']).decode('utf-8')
-            return jsonify({"token":token,"email":email})
+            expire = timedelta(minutes=1)
+            access_token = create_access_token(identity=username,expires_delta=expire)
+            return jsonify({"access_token":access_token,"email":email})
         else:
             return jsonify({"result":'Incorrect email or password'})
     else:
