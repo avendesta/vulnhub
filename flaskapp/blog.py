@@ -38,13 +38,12 @@ def get():
     if form.validate():
         email = form.email.data
         current_user = get_jwt_identity()
-        print(current_user)
         element = mongo.db.accounts.find_one({'email':email})
 
-        if current_user == element.get('username'):
+        if element and current_user == element.get('username'):
             username = element.get('username')
             email = element.get('email')
-            return username
+            return jsonify(username=username,email=email)
         else:
             return jsonify({"email":'email not found'})
     else:
@@ -60,10 +59,10 @@ def register():
 
         accounts = mongo.db.accounts
         if accounts.find({"email":form.email.data}).count()>0:
-            return jsonify({"result":'fail',"email":"email already exist"})
+            return jsonify(result='fail',email="email already exist")
         else:
             accounts.insert_one({"username":username,"email":email,"password":password})
-            return jsonify({"result":'success'})
+            return jsonify(result='success',username=username,email=email,password=password)
     else:
         return jsonify(form.errors)
 
@@ -75,16 +74,48 @@ def login():
         email = form.email.data
         password = form.email.data
         fetch = accounts.find_one({"email":email})
-        print(fetch)
         if fetch:
             username = fetch.get("username")
             expire = timedelta(minutes=1)
             access_token = create_access_token(identity=username,expires_delta=expire)
-            return jsonify({"access_token":access_token,"email":email})
+            return jsonify(access_token=access_token,email=email)
         else:
-            return jsonify({"result":'Incorrect email or password'})
+            return jsonify(result='Incorrect email or password')
     else:
         return jsonify(form.errors)
 
 if __name__ == "__main__":
     app.run(debug=True)
+
+
+@app.route("/recover", methods=['GET'])
+def recover():
+    form = RequestForm(request.args)
+    if form.validate():
+        email = form.email.data
+        element = mongo.db.accounts.find_one({'email':email})
+
+        if element.get('username',None):
+            username = element.get('username')
+            email = element.get('email')
+            return f"Dear {username}, this functionality is not implemented yet!"
+        else:
+            return jsonify({"email":'email not found'})
+    else:
+        return jsonify(form.errors)
+
+# @app.route("/admin", methods=['GET'])
+# def admin():
+#     form = RequestForm(request.args)
+#     if form.validate():
+#         email = form.email.data
+#         element = mongo.db.accounts.find_one({'email':email})
+
+#         if element.get('username'):
+#             username = element.get('username')
+#             email = element.get('email')
+#             return f"Dear {username}, this functionality is not implemented yet!"
+#         else:
+#             return jsonify({"email":'email not found'})
+#     else:
+#         return jsonify(form.errors)
