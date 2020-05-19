@@ -28,6 +28,6 @@ flask run
 - MongoDB Setup
   - install mongodb following the [official doc](https://docs.mongodb.com/manual/tutorial/install-mongodb-on-ubuntu/)
   - install [mongodb compass](https://www.mongodb.com/download-center/compass)  ubuntu 
-  - create database named `flaskapp` and table/document named `accounts`
+  - create database named `flaskapp` and table/collection named `accounts`
   - import the sample json data - `sample_db.json` into `accounts`
 ![flask-framework-wiki-image](https://bit.ly/2zP5qcU)

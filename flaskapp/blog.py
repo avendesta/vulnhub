@@ -1,10 +1,10 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory, redirect, url_for
 from flask_pymongo import PyMongo
 from forms import RegistrationForm, LoginForm, RequestForm
 from flask_jwt_extended import JWTManager, jwt_required, create_access_token,get_jwt_identity
 from datetime import datetime, timedelta
 
-app = Flask(__name__)
+app = Flask(__name__,static_folder='static')
 
 app.config['SECRET_KEY'] = 'iloveyou'
 app.config['MONGO_DBNAME'] = "flaskapp"
@@ -17,21 +17,25 @@ mongo = PyMongo(app)
 jwt = JWTManager(app)
 
 
-@app.route("/challenge",methods=["GET"])
+@app.route("/api/challenge")
 def index():
-    return jsonify({"goal-1":"log in as a previlaged user","goal-2":"find the secret_key of the webapp"})
+    return jsonify({"goal-1":"log in as a previleged/admin user","goal-2":"find the secret_key of the webapp"})
 
-@app.route("/all" )
-def getall():
-    accounts = mongo.db.accounts
-    all_user = []
-    users = accounts.find()
-    for u in users:
-        u.pop('_id')
-        all_user.append(u)
-    return jsonify(all_user)
+@app.route('/<path:path>')
+def catch_all(path):
+    return redirect(url_for('index'))
 
-@app.route("/get", methods=['GET'])
+# @app.route("/api/all" )
+# def getall():
+#     accounts = mongo.db.accounts
+#     all_user = []
+#     users = accounts.find()
+#     for u in users:
+#         u.pop('_id')
+#         all_user.append(u)
+#     return jsonify(all_user)
+
+@app.route("/api/get", methods=['GET'])
 @jwt_required
 def get():
     form = RequestForm(request.args)
@@ -49,7 +53,7 @@ def get():
     else:
         return jsonify(form.errors)
 
-@app.route("/register", methods=['POST'])
+@app.route("/api/register", methods=['POST'])
 def register():
     form = RegistrationForm()
     if form.validate_on_submit():
@@ -66,7 +70,7 @@ def register():
     else:
         return jsonify(form.errors)
 
-@app.route("/login",methods=['POST'])
+@app.route("/api/login",methods=['POST'])
 def login():
     form = LoginForm()
     accounts = mongo.db.accounts
@@ -84,11 +88,7 @@ def login():
     else:
         return jsonify(form.errors)
 
-if __name__ == "__main__":
-    app.run(debug=True)
-
-
-@app.route("/recover", methods=['GET'])
+@app.route("/api/recover", methods=['GET'])
 def recover():
     form = RequestForm(request.args)
     if form.validate():
@@ -104,6 +104,14 @@ def recover():
     else:
         return jsonify(form.errors)
 
-@app.route("/help", methods=['GET'])
-def admin():
+@app.route("/api/help", methods=['GET'])
+def help():
     return "You can contact the admin via ricksanchez@adult.swim"
+
+@app.route('/robots.txt')
+def robots():
+    return send_from_directory(app.static_folder, request.path[1:])
+
+
+if __name__ == "__main__":
+    app.run(debug=True)
