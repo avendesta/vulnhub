@@ -16,14 +16,17 @@ app.config['JWT_SECRET_KEY'] = 'superSecret'
 mongo = PyMongo(app)
 jwt = JWTManager(app)
 
+@app.route("/")
+def index():
+    return jsonify(status='up')
 
 @app.route("/api/challenge")
-def index():
-    return jsonify({"goal-1":"log in as a previleged/admin user","goal-2":"find the secret_key of the webapp"})
+def base():
+    return jsonify({"goal-1":"log in as a previleged/admin user","goal-2":"find the secret_key of this flask webapp"})
 
-@app.route('/<path:path>')
+@app.route('/<path:path>', methods=['GET'])
 def catch_all(path):
-    return redirect(url_for('index'))
+    return redirect(url_for('index')), 301
 
 # @app.route("/api/all" )
 # def getall():
@@ -49,9 +52,9 @@ def get():
             email = element.get('email')
             return jsonify(username=username,email=email)
         else:
-            return jsonify({"email":'email not found'})
+            return jsonify({"email":'email not found'}),400
     else:
-        return jsonify(form.errors)
+        return jsonify(form.errors),400
 
 @app.route("/api/register", methods=['POST'])
 def register():
@@ -63,12 +66,12 @@ def register():
 
         accounts = mongo.db.accounts
         if accounts.find({"email":form.email.data}).count()>0:
-            return jsonify(email="email already exist")
+            return jsonify(email="email already exist"),400
         else:
             accounts.insert_one({"username":username,"email":email,"password":password})
-            return jsonify(username=username,email=email,password="****")
+            return jsonify(username=username,email=email,password="****"), 201
     else:
-        return jsonify(form.errors)
+        return jsonify(form.errors), 400
 
 @app.route("/api/login",methods=['POST'])
 def login():
@@ -84,13 +87,13 @@ def login():
             access_token = create_access_token(identity=username,expires_delta=expire)
             return jsonify(access_token=access_token,email=email)
         else:
-            return jsonify(result='Incorrect email or password')
+            return jsonify(result='Incorrect email or password'),400
     else:
-        return jsonify(form.errors)
+        return jsonify(form.errors),400
 
 @app.route("/api/recover", methods=['GET'])
 def recover():
-    form = RequestForm(request.args)
+    form = RequestForm(request.values)
     if form.validate():
         email = form.email.data
         element = mongo.db.accounts.find_one({'email':email})
@@ -98,11 +101,11 @@ def recover():
         if element.get('username',None):
             username = element.get('username')
             email = element.get('email')
-            return f"Dear {username}, this functionality is not implemented yet!"
+            return f"Dear {username}, this functionality is not implemented yet!", 202
         else:
-            return jsonify({"email":'email not found'})
+            return jsonify({"email":'email not found'}),400
     else:
-        return jsonify(form.errors)
+        return jsonify(form.errors),404
 
 @app.route("/api/help", methods=['GET'])
 def help():
