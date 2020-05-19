@@ -1,35 +1,33 @@
 # vulnhub
-a vulnerable webapp, api setup script
+#### Vulnerable Flask-API script
 
-- A flask web app
-vulnerabilities
+###### _Vulnerabilities_
 
-1 - easy to guess secret key
-2 - jwt session similar for users of the same first name
+1. easy to guess secret key
+1. jwt session similar for users of the same first name
 
+###### SETUP ON UBUNTU
+- cloning and virtualenv setup
+```bash
+git clone https/github.com/noodle-lover/vulnhub
+cd vulnhub
+virtualenv venv
+source /venv/bin/activate 
+# make sure its activated by running `which python` and `which pip`
+cd flaskapp
+```
 
-**INITIAL SETUP**
-*git clone https/github.com/noodle-lover/vulnhub*
+- make sure to set environment variable before `flask run`
+```bash
+export FLASK_APP=blog.py 
+# if you want debug mode `export FLASK_ENV=development`
+pip install -r requirements.txt
+flask run
+```
 
-*cd vulnhub*
-
-*virtualenv venv *
-
-**activate virtualenv**
-*source /venv/bin/activate*
-
-*cd flaskapp*
-
-**make sure to set environment variable before `flask run`**
-*export FLASK_APP=blog.py*
-*pip install -r requirements.txt*
-*flask run*
-
-
-**MONGODB SETUP**
-1- install mongodb following the official doc
-"https://docs.mongodb.com/manual/tutorial/install-mongodb-on-ubuntu/"
-2- install mongodb compass following
-"https://www.mongodb.com/download-center/compass"
-3- create mongo app named 'flaskapp' and document named 'accounts'
-4- import sample json data - sample_db.json into it
+- MongoDB Setup
+  - install mongodb following the [official doc](https://docs.mongodb.com/manual/tutorial/install-mongodb-on-ubuntu/)
+  - install [mongodb compass](https://www.mongodb.com/download-center/compass)  ubuntu 
+  - create mongo app named 'flaskapp' and document named 'accounts'
+  - import the sample json data - `sample_db.json` into it
+![flask-framework-wiki-image](https://bit.ly/2zP5qcU)
