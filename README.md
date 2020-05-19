@@ -8,25 +8,28 @@ vulnerabilities
 2 - jwt session similar for users of the same first name
 
 
-# INITIAL SETUP
-sudo apt install python3-pip
-sudo apt install python3-virtualenv
-#make sure pwd = vulnhub/
-virtualenv venv 
-# or
-# pip3 install virtualenv; python3 -m virtualenv venv
+**INITIAL SETUP**
+*git clone https/github.com/noodle-lover/vulnhub*
 
-#activate virtualenv
-source /venv/bin/activate
-cd flaskapp
+*cd vulnhub*
 
-# make sure to set environment variable before `flask run`
-export FLASK_APP=blog.py
-pip install -r requirements.txt
-flask run
+*virtualenv venv *
+
+**activate virtualenv**
+*source /venv/bin/activate*
+
+*cd flaskapp*
+
+**make sure to set environment variable before `flask run`**
+*export FLASK_APP=blog.py*
+*pip install -r requirements.txt*
+*flask run*
 
 
-# MONGODB
-#-install mongodb following 
-#-"https://docs.mongodb.com/manual/tutorial/install-mongodb-on-ubuntu/"
-# install mongodb compass for visualization and import sample json data - sample_db.json
+**MONGODB SETUP**
+1- install mongodb following the official doc
+"https://docs.mongodb.com/manual/tutorial/install-mongodb-on-ubuntu/"
+2- install mongodb compass following
+"https://www.mongodb.com/download-center/compass"
+3- create mongo app named 'flaskapp' and document named 'accounts'
+4- import sample json data - sample_db.json into it
