@@ -6,12 +6,12 @@ from datetime import datetime, timedelta
 
 app = Flask(__name__,static_folder='static')
 
-app.config['SECRET_KEY'] = 'iloveyou'
+# app.config['SECRET_KEY'] = 'iloveyou'
 app.config['MONGO_DBNAME'] = "flaskapp"
 app.config['MONGO_URI'] = "mongodb://localhost:27017/flaskapp"
 app.config['WTF_CSRF_ENABLED'] = False
 app.config['JWT_TOKEN_LOCATION'] = ['json']
-app.config['JWT_SECRET_KEY'] = 'superSecret'
+app.config['JWT_SECRET_KEY'] = 'qwerty123456'
 
 mongo = PyMongo(app)
 jwt = JWTManager(app)
@@ -82,8 +82,8 @@ def login():
     accounts = mongo.db.accounts
     if form.validate_on_submit():
         email = form.email.data
-        password = form.email.data
-        fetch = accounts.find_one({"email":email})
+        password = form.password.data
+        fetch = accounts.find_one({"email":email,"password":password})
         if fetch:
             username = fetch.get("username")
             expire = timedelta(minutes=30)
@@ -112,7 +112,7 @@ def recover():
 
 @app.route("/api/help", methods=['GET'])
 def help():
-    return jsonify(msg="You can contact the admin via ricksanchez@adult.swim")
+    return jsonify(msg="You can contact the admin via peradiso@fake.flask")
 
 @app.route('/robots.txt')
 def robots():
