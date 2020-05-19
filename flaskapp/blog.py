@@ -22,7 +22,10 @@ def index():
 
 @app.route("/api/challenge")
 def base():
-    return jsonify({"goal-1":"log in as a previleged/admin user","goal-2":"find the secret_key of this flask webapp"})
+    return jsonify({"goal-1":"log in as a previleged/admin user",
+    "goal-2":"find the secret_key of this flask webapp",
+    "note":"please do not brute force the site, it won't help"
+    })
 
 @app.route('/<path:path>', methods=['GET'])
 def catch_all(path):
@@ -83,22 +86,22 @@ def login():
         fetch = accounts.find_one({"email":email})
         if fetch:
             username = fetch.get("username")
-            expire = timedelta(minutes=1)
+            expire = timedelta(minutes=30)
             access_token = create_access_token(identity=username,expires_delta=expire)
             return jsonify(access_token=access_token,email=email)
         else:
-            return jsonify(result='Incorrect email or password'),400
+            return jsonify(msg='Incorrect email or password'),400
     else:
         return jsonify(form.errors),400
 
 @app.route("/api/recover", methods=['GET'])
 def recover():
-    form = RequestForm(request.values)
+    form = RequestForm(request.args)
     if form.validate():
         email = form.email.data
         element = mongo.db.accounts.find_one({'email':email})
 
-        if element.get('username',None):
+        if element:
             username = element.get('username')
             email = element.get('email')
             return f"Dear {username}, this functionality is not implemented yet!", 202
@@ -109,7 +112,7 @@ def recover():
 
 @app.route("/api/help", methods=['GET'])
 def help():
-    return "You can contact the admin via ricksanchez@adult.swim"
+    return jsonify(msg="You can contact the admin via ricksanchez@adult.swim")
 
 @app.route('/robots.txt')
 def robots():
