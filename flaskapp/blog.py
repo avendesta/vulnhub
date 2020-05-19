@@ -17,9 +17,9 @@ mongo = PyMongo(app)
 jwt = JWTManager(app)
 
 
-@app.route("/")
+@app.route("/challenge",methods=["GET"])
 def index():
-    return "Hello world!"
+    return jsonify({"goal-1":"log in as a previlaged user","goal-2":"find the secret_key of the webapp"})
 
 @app.route("/all" )
 def getall():
@@ -59,10 +59,10 @@ def register():
 
         accounts = mongo.db.accounts
         if accounts.find({"email":form.email.data}).count()>0:
-            return jsonify(result='fail',email="email already exist")
+            return jsonify(email="email already exist")
         else:
             accounts.insert_one({"username":username,"email":email,"password":password})
-            return jsonify(result='success',username=username,email=email,password=password)
+            return jsonify(username=username,email=email,password="****")
     else:
         return jsonify(form.errors)
 
@@ -104,18 +104,6 @@ def recover():
     else:
         return jsonify(form.errors)
 
-# @app.route("/admin", methods=['GET'])
-# def admin():
-#     form = RequestForm(request.args)
-#     if form.validate():
-#         email = form.email.data
-#         element = mongo.db.accounts.find_one({'email':email})
-
-#         if element.get('username'):
-#             username = element.get('username')
-#             email = element.get('email')
-#             return f"Dear {username}, this functionality is not implemented yet!"
-#         else:
-#             return jsonify({"email":'email not found'})
-#     else:
-#         return jsonify(form.errors)
+@app.route("/help", methods=['GET'])
+def admin():
+    return "You can contact the admin via ricksanchez@adult.swim"

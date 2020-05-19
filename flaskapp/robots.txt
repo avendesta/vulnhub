@@ -1,0 +1,8 @@
+/api/
+/api/challenge
+/api/login
+/api/register
+/api/recover
+/api/get
+/api/admin
+/api/help
