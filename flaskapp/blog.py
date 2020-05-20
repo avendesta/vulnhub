@@ -27,9 +27,9 @@ def base():
     "note":"please do not brute force the site, it won't help"
     })
 
-@app.route('/<path:path>', methods=['GET'])
-def catch_all(path):
-    return redirect(url_for('index')), 301
+# @app.route('/<path:path>', methods=['GET'])
+# def catch_all(path):
+#     return redirect(url_for('index')), 301
 
 # @app.route("/api/all" )
 # def getall():
