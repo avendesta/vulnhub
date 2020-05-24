@@ -2,15 +2,20 @@ from flask import Flask, request, jsonify, send_from_directory, redirect, url_fo
 from flask_pymongo import PyMongo
 from forms import RegistrationForm, LoginForm, RequestForm
 from flask_jwt_extended import JWTManager, jwt_required, create_access_token,get_jwt_identity
-from datetime import datetime, timedelta
+
 
 app = Flask(__name__,static_folder='static')
 
 app.config['MONGO_DBNAME'] = "flaskapp"
 app.config['MONGO_URI'] = "mongodb://localhost:27017/flaskapp"
+#check https://flask-jwt-extended.readthedocs.io/en/stable/options/ for configuration options of jwt
 app.config['WTF_CSRF_ENABLED'] = False
-app.config['JWT_TOKEN_LOCATION'] = ['json']
+app.config['JWT_ACCESS_TOKEN_EXPIRES'] = 60*30 # 30 minutes
+app.config['JWT_TOKEN_LOCATION'] = ('json','headers')
+app.config['JWT_ERROR_MESSAGE_KEY'] = 'access_token'
 app.config['JWT_SECRET_KEY'] = 'qwerty123456'
+app.config['JWT_HEADER_TYPE'] = ''
+app.config['JWT_HEADER_NAME'] = 'access_token'
 
 mongo = PyMongo(app)
 jwt = JWTManager(app)
@@ -72,8 +77,7 @@ def login():
         fetch = accounts.find_one({"email":email,"password":password})
         if fetch:
             username = fetch.get("username")
-            expire = timedelta(minutes=30)
-            access_token = create_access_token(identity=username,expires_delta=expire)
+            access_token = create_access_token(identity=username)
             return jsonify(access_token=access_token,email=email)
         else:
             return jsonify(msg='Incorrect email or password'),400
