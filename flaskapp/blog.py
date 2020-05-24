@@ -6,7 +6,6 @@ from datetime import datetime, timedelta
 
 app = Flask(__name__,static_folder='static')
 
-# app.config['SECRET_KEY'] = 'iloveyou'
 app.config['MONGO_DBNAME'] = "flaskapp"
 app.config['MONGO_URI'] = "mongodb://localhost:27017/flaskapp"
 app.config['WTF_CSRF_ENABLED'] = False
@@ -27,19 +26,6 @@ def base():
     "note":"please do not brute force the site, it won't help"
     })
 
-# @app.route('/<path:path>', methods=['GET'])
-# def catch_all(path):
-#     return redirect(url_for('index')), 301
-
-# @app.route("/api/all" )
-# def getall():
-#     accounts = mongo.db.accounts
-#     all_user = []
-#     users = accounts.find()
-#     for u in users:
-#         u.pop('_id')
-#         all_user.append(u)
-#     return jsonify(all_user)
 
 @app.route("/api/get", methods=['GET'])
 @jwt_required
