@@ -30,4 +30,5 @@ flask run
   - install [mongodb compass](https://www.mongodb.com/download-center/compass)  ubuntu 
   - create database named `flaskapp` and table/collection named `accounts`
   - import the sample json data - `sample_db.json` into `accounts`
-![flask-framework-wiki-image](https://bit.ly/2zP5qcU)
+
+![flask](https://user-images.githubusercontent.com/53615807/83264830-584a8a80-a1c9-11ea-9ab2-5f9b7586508a.png)
